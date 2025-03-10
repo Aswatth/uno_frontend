@@ -1,19 +1,20 @@
 .page {
-  min-height: 100vh;
   min-width: 100vw;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 .title {
-  font-size: 5em;
+  font-size: 2.5em;
   font-weight: bold;
   margin: 10px;
+  text-transform: uppercase;
 }
 
-.playerName {
+.gameName {
   border-radius: 20px;
   width: 50%;
   font-size: 2em;
@@ -23,9 +24,9 @@
 
 .button {
   width: 50%;
-  padding: 12px;
-  margin: 10px;
+  font-size: 2em;
+  padding: 20px;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
-  font-weight: 600;
+  margin: 20px;
+  border-radius: 20px;
 }
