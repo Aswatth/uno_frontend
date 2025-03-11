@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export const gameNameStore = create((set) => ({
-  gameName: "",
-  setGameName: (name) => set(() => ({ gameName: name })),
+export const gameStore = create((set) => ({
+  gameId: "",
+  setGameId: (id) => set(() => ({ gameId: id })),
 }));

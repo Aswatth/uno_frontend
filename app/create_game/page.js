@@ -1,29 +1,39 @@
 "use client";
 
 import styles from "./page.module.css";
-import { playerStore } from "../(utils)/data-stores/playerStore";
-import { gameNameStore } from "../(utils)/data-stores/gameStore";
 import { clientStore } from "../(utils)/data-stores/webSocketStore";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { gameStore } from "../(utils)/data-stores/gameStore";
 
 export default function CreateGame() {
-  const { gameName, setGameName } = gameNameStore();
-  const { playerName } = playerStore();
+  const router = useRouter();
+  const [gameName, setGameName] = useState("");
+  const { setGameId } = gameStore();
   const { client } = clientStore();
 
+  useEffect(() => {
+    if (client == null) {
+      router.replace("/");
+    }
+  }, []);
+
   function handleGameCreation() {
-    const subscription = client.subscribe("/topic/ping", (response) => {
-      console.log(response.body);
+    const gameData = { gameName: gameName, minPlayers: 2 };
+    client.subscribe("/user/queue/game", (response) => {
+      const gameId = response.body;
+      setGameId(gameId);
+
+      client.subscribe("/topic/join-game/" + gameId, (response) => {
+      });
+      client.publish({ destination: "/app/join-game/" + gameId });
+
+      router.push("/game/" + response.body);
     });
-
-    console.log(playerName + " created a game: " + gameName);
-
     client.publish({
-      destination: "/app/ping",
-      body: "it's working",
+      destination: "/app/game",
+      body: JSON.stringify(gameData),
     });
-
-    // subscription.unsubscribe();
   }
 
   return (
