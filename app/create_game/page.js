@@ -24,11 +24,10 @@ export default function CreateGame() {
       const gameId = response.body;
       setGameId(gameId);
 
-      client.subscribe("/topic/join-game/" + gameId, (response) => {
-      });
+      client.subscribe("/topic/join-game/" + gameId, () => {});
       client.publish({ destination: "/app/join-game/" + gameId });
 
-      router.push("/game/" + response.body);
+      router.push("/game/" + gameId);
     });
     client.publish({
       destination: "/app/game",

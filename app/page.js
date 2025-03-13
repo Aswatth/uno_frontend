@@ -1,5 +1,4 @@
 "use client";
-import { useEffect, useState } from "react";
 import { playerStore } from "./(utils)/data-stores/playerStore";
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation";

@@ -16,7 +16,14 @@ export default function Home() {
       >
         Create a game
       </button>
-      <button className={styles.button}>Join a game</button>
+      <button
+        className={styles.button}
+        onClick={() => {
+          router.push("/browse-games");
+        }}
+      >
+        Join a game
+      </button>
     </div>
   );
 }
