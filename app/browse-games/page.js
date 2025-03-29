@@ -1,29 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { clientStore } from "../(utils)/data-stores/webSocketStore";
 import { gameListStore, gameStore } from "../(utils)/data-stores/gameStore";
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
+import { playerStore } from "../(utils)/data-stores/playerStore";
 
 export default function BrowseGames() {
   const router = useRouter();
-  const { setGameId } = gameStore();
+  const { setIsHost } = playerStore();
+  const { setGame } = gameStore();
   const { games, setGames } = gameListStore();
   const { client } = clientStore();
 
   useEffect(() => {
-    client.subscribe("/user/queue/browse-games", (response) => {
+    client.subscribe("/user/queue/browse-lobbies", (response) => {
       setGames(JSON.parse(response.body));
     });
-    client.publish({ destination: "/app/browse-games" });
+    client.publish({ destination: "/app/browse-lobbies" });
   }, []);
 
-  function joinGame(gameId) {
-    client.subscribe("/topic/join-game/" + gameId, (response) => {});
-    client.publish({ destination: "/app/join-game/" + gameId });
-    setGameId(gameId);
-    router.push("/game/" + gameId);
+  function joinGame(gameToJoin) {
+    client.subscribe("/topic/join-lobby/" + gameToJoin.gameId, (response) => {
+      const game = JSON.parse(response.body);
+      setGame({
+        gameId: game.gameId,
+        gameName: game.gameName,
+        currentPlayers: game.currentPlayers,
+      });
+    });
+    client.subscribe("/user/queue/host", (response) => {
+      setIsHost(response.body == "true");
+    });
+    client.publish({ destination: "/app/join-lobby/" + gameToJoin.gameId });
+    router.push("/game/" + gameToJoin.gameId + "/lobby");
   }
 
   return (
@@ -42,7 +53,7 @@ export default function BrowseGames() {
                 </div>
                 <button
                   className={styles[`join-button`]}
-                  onClick={() => joinGame(m.gameId)}
+                  onClick={() => joinGame(m)}
                 >
                   Join
                 </button>

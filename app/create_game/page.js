@@ -5,11 +5,13 @@ import { clientStore } from "../(utils)/data-stores/webSocketStore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { gameStore } from "../(utils)/data-stores/gameStore";
+import { playerStore } from "../(utils)/data-stores/playerStore";
 
 export default function CreateGame() {
   const router = useRouter();
+  const { setIsHost } = playerStore();
   const [gameName, setGameName] = useState("");
-  const { setGameId } = gameStore();
+  const { setGame } = gameStore();
   const { client } = clientStore();
 
   useEffect(() => {
@@ -20,17 +22,25 @@ export default function CreateGame() {
 
   function handleGameCreation() {
     const gameData = { gameName: gameName, minPlayers: 2 };
-    client.subscribe("/user/queue/game", (response) => {
+    client.subscribe("/user/queue/lobby", (response) => {
       const gameId = response.body;
-      setGameId(gameId);
 
-      client.subscribe("/topic/join-game/" + gameId, () => {});
-      client.publish({ destination: "/app/join-game/" + gameId });
-
-      router.push("/game/" + gameId);
+      client.subscribe("/topic/join-lobby/" + gameId, (response) => {
+        const game = JSON.parse(response.body);
+        setGame({
+          gameId: game.gameId,
+          gameName: game.gameName,
+          currentPlayers: game.currentPlayers,
+        });
+      });
+      client.subscribe("/user/queue/host", (response) => {
+        setIsHost(response.body == "true");
+      });
+      client.publish({ destination: "/app/join-lobby/" + gameId });
+      router.push("/game/" + gameId + "/lobby");
     });
     client.publish({
-      destination: "/app/game",
+      destination: "/app/lobby",
       body: JSON.stringify(gameData),
     });
   }

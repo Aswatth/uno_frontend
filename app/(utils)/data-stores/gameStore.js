@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
 export const gameStore = create((set) => ({
-  gameId: "",
-  setGameId: (id) => set(() => ({ gameId: id })),
+  game: {},
+  setGame: (game) => set(() => ({ game })),
 }));
 
 export const gameListStore = create((set) => ({
