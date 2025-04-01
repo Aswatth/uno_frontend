@@ -39,7 +39,10 @@ export default function BrowseGames() {
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.title}>Browse games</h1>
+      <div className={styles.menuBar}>
+        <h1 className={styles.title}>Browse games</h1>
+      </div>
+
       <ul>
         {games.map((m) => {
           return (
@@ -47,9 +50,7 @@ export default function BrowseGames() {
               <div className={styles[`list-tile`]}>
                 <div className={styles[`lt-title`]}>
                   <h3>{m.gameName}</h3>
-                  <p>
-                    <i>{m.gameId}</i>
-                  </p>
+                  <span>{m.gameId}</span>
                 </div>
                 <button
                   className={styles[`join-button`]}
