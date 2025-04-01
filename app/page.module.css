@@ -7,12 +7,23 @@
   justify-content: center;
 }
 
-.title {
-  font-size: 5em;
-  font-weight: bold;
-  margin: 10px;
+.page input,
+.page input::selection {
+  border: 2px solid black;
 }
 
+.title {
+  background: #ed1d26;
+  border-radius: 200px;
+}
+.title h1 {
+  transform: rotate(-20deg);
+  font-size: 15em;
+  text-shadow: -20px 10px black;
+  color: #f9db28;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
 .playerName {
   border-radius: 20px;
   width: 50%;
@@ -23,9 +34,22 @@
 
 .button {
   width: 50%;
+  border-radius: 12px;
   padding: 12px;
-  margin: 10px;
-  text-transform: uppercase;
+  margin: 12px;
+  border: 2px solid black;
+  transition: 0.5s;
   letter-spacing: 0.2em;
-  font-weight: 600;
+
+  text-transform: uppercase;
+  font-weight: bold;
+  background-color: transparent;
+}
+
+.button:hover {
+  cursor: pointer;
+  color: #f9db28;
+  background-color: #ed1d26;
+  text-shadow: -2px 1px black;
+  transition: 0.5s;
 }

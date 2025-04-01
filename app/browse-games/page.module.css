@@ -4,10 +4,20 @@
   display: flex;
   flex-direction: column;
   justify-content: start;
-  align-items: center;
+  align-items: start;
 }
 
+.menuBar {
+  width: 100%;
+  height: 100px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  background-color: #ed1d26;
+}
 .title {
+  color: #f9db28;
+  text-shadow: -5px 2px black;
   font-size: 2.5em;
   font-weight: bold;
   text-transform: uppercase;
@@ -27,14 +37,20 @@
   display: flex;
   width: 100%;
   padding: 20px;
+  border-radius: 12px;
   border: 2px black solid;
   justify-content: start;
   align-items: center;
 }
 
 .lt-title {
-  flex: 2;
+  flex: 4;
   font-size: 1.5em;
+}
+
+.lt-title span {
+  font-weight: lighter;
+  font-size: 0.8em;
 }
 
 .join-button {
@@ -42,5 +58,17 @@
   width: 30%;
   padding: 20px;
   text-transform: uppercase;
-  font-style: italic;
+  font-weight: bold;
+
+  border-radius: 12px;
+  background-color: #ed1d26;
+  color: white;
+  border: 2px solid black;
+  text-shadow: -2px 1px black;
+  transition: 1s;
+}
+.join-button:hover {
+  cursor: pointer;
+  background: linear-gradient(to right, #ed1d26, #f9db28);
+  transition: 1s;
 }

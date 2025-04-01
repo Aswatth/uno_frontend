@@ -11,6 +11,7 @@ export default function CreateGame() {
   const router = useRouter();
   const { setIsHost } = playerStore();
   const [gameName, setGameName] = useState("");
+  const [minPlayers, setMinPlayers] = useState(2);
   const { setGame } = gameStore();
   const { client } = clientStore();
 
@@ -21,7 +22,7 @@ export default function CreateGame() {
   }, []);
 
   function handleGameCreation() {
-    const gameData = { gameName: gameName, minPlayers: 2 };
+    const gameData = { gameName: gameName, minPlayers: minPlayers };
     client.subscribe("/user/queue/lobby", (response) => {
       const gameId = response.body;
 
@@ -48,15 +49,27 @@ export default function CreateGame() {
   return (
     <div className={styles.page}>
       <h1 className={styles.title}>Create a game</h1>
-      <input
-        className={styles.gameName}
-        value={gameName}
-        maxLength={15}
-        onChange={(e) => setGameName(e.target.value)}
-      ></input>
+      <div className={styles.inputs}>
+        <input
+          className={styles.gameName}
+          value={gameName}
+          maxLength={15}
+          placeholder="Lets give a name for your game..."
+          onChange={(e) => setGameName(e.target.value)}
+        ></input>
+        <input
+          className={styles.minPlayers}
+          type="number"
+          max={7}
+          min={2}
+          value={minPlayers}
+          onChange={(e) => setMinPlayers(parseInt(e.target.value))}
+        ></input>
+      </div>
       <button
         className={styles.button}
         onClick={() => {
+          // console.log({ gameName: gameName, minPlayers: minPlayers });
           handleGameCreation();
         }}
       >

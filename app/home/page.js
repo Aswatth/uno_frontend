@@ -7,7 +7,9 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.title}>UNO</h1>
+      <div className={styles.title}>
+        <h1>UNO</h1>
+      </div>
       <button
         className={styles.button}
         onClick={() => {

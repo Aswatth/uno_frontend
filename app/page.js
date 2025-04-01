@@ -33,11 +33,14 @@ export default function App() {
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.title}>UNO</h1>
+      <div className={styles.title}>
+        <h1>UNO</h1>
+      </div>
       <input
         className={styles.playerName}
         value={playerName}
         maxLength={15}
+        placeholder="What should other players call you?"
         onChange={(e) => setPlayerName(e.target.value)}
       ></input>
       <button

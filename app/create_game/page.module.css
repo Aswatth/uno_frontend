@@ -8,25 +8,58 @@
 }
 
 .title {
-  font-size: 2.5em;
-  font-weight: bold;
-  margin: 10px;
+  font-size: 5em;
+  -webkit-text-stroke: 2px black;
   text-transform: uppercase;
+  color: #f9db28;
+  font-weight: bold;
+  margin-bottom: 30px;
 }
 
+.inputs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+}
 .gameName {
   border-radius: 20px;
   width: 50%;
   font-size: 2em;
-  padding: 20px;
-  margin: 20px;
+  padding: 10px;
+  margin: 10px;
+}
+.gameName::placeholder {
+  font-size: 0.5em;
+}
+
+.minPlayers {
+  border-radius: 20px;
+  width: 50%;
+  font-size: 2em;
+  padding: 10px;
+  margin: 10px;
 }
 
 .button {
   width: 50%;
-  font-size: 2em;
-  padding: 20px;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 12px;
+  border: 2px solid black;
+  transition: 0.5s;
+  letter-spacing: 0.2em;
+
   text-transform: uppercase;
-  margin: 20px;
-  border-radius: 20px;
+  font-weight: bold;
+  background-color: transparent;
+}
+
+.button:hover {
+  cursor: pointer;
+  color: #f9db28;
+  background-color: #ed1d26;
+  text-shadow: -2px 1px black;
+  transition: 0.5s;
 }
