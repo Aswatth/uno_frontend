@@ -22,13 +22,14 @@ export default function BrowseGames() {
   }, []);
 
   function joinGame(gameToJoin) {
+    if (gameToJoin.currentPlayers.length >= gameToJoin.minPlayers) {
+      alert("Party is full");
+      return;
+    }
     client.subscribe("/topic/join-lobby/" + gameToJoin.gameId, (response) => {
       const game = JSON.parse(response.body);
-      setGame({
-        gameId: game.gameId,
-        gameName: game.gameName,
-        currentPlayers: game.currentPlayers,
-      });
+      console.log("GAME: " + game);
+      setGame(game);
     });
     client.subscribe("/user/queue/host", (response) => {
       setIsHost(response.body == "true");
@@ -50,7 +51,10 @@ export default function BrowseGames() {
               <div className={styles[`list-tile`]}>
                 <div className={styles[`lt-title`]}>
                   <h3>{m.gameName}</h3>
-                  <span>{m.gameId}</span>
+                  <span>
+                    Players: {m.currentPlayers.length} / {m.minPlayers}
+                    <br></br> {m.gameId}
+                  </span>
                 </div>
                 <button
                   className={styles[`join-button`]}

@@ -6,20 +6,14 @@ import { playerStore } from "@/app/(utils)/data-stores/playerStore";
 import styles from "./page.module.css";
 import { clientStore } from "@/app/(utils)/data-stores/webSocketStore";
 export default function Game() {
-  const { game, setGame } = gameStore();
+  const { game, setGame, isAllReady } = gameStore();
   const { isHost, isReady, setReadyStatus } = playerStore();
   const { client } = clientStore();
-  const [isAllReady, setIsAllReady] = useState(false);
 
   useEffect(() => {
     client.subscribe("/topic/lobby/" + game.gameId, (result) => {
       const content = JSON.parse(result.body);
       setGame(content);
-      let ready = true;
-      content.currentPlayers.map((m) => {
-        ready &= m.status;
-      });
-      setIsAllReady(ready);
     });
   }, []);
 
@@ -68,7 +62,7 @@ export default function Game() {
 
   function startGameButton() {
     return (
-      <button className={styles.button} disabled={!isAllReady}>
+      <button className={styles.button} disabled={!isAllReady && (game.currentPlayers.length == game.minPlayers)}>
         Start game
       </button>
     );

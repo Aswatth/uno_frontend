@@ -2,7 +2,14 @@ import { create } from "zustand";
 
 export const gameStore = create((set) => ({
   game: {},
-  setGame: (game) => set(() => ({ game })),
+  isAllReady: false,
+  setGame: (game) => {
+    let ready = true;
+    game.currentPlayers.map((m) => {
+      ready &= m.status;
+    });
+    set(() => ({ isAllReady: ready, game: game }));
+  },
 }));
 
 export const gameListStore = create((set) => ({

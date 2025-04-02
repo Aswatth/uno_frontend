@@ -28,11 +28,7 @@ export default function CreateGame() {
 
       client.subscribe("/topic/join-lobby/" + gameId, (response) => {
         const game = JSON.parse(response.body);
-        setGame({
-          gameId: game.gameId,
-          gameName: game.gameName,
-          currentPlayers: game.currentPlayers,
-        });
+        setGame(game);
       });
       client.subscribe("/user/queue/host", (response) => {
         setIsHost(response.body == "true");
