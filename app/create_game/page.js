@@ -4,7 +4,7 @@ import styles from "./page.module.css";
 import { clientStore } from "../(utils)/data-stores/webSocketStore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { gameStore } from "../(utils)/data-stores/gameStore";
+import { lobbyStore } from "../(utils)/data-stores/gameStore";
 import { playerStore } from "../(utils)/data-stores/playerStore";
 
 export default function CreateGame() {
@@ -12,7 +12,7 @@ export default function CreateGame() {
   const { setIsHost } = playerStore();
   const [gameName, setGameName] = useState("");
   const [minPlayers, setMinPlayers] = useState(2);
-  const { setGame } = gameStore();
+  const { setLobby } = lobbyStore();
   const { client } = clientStore();
 
   useEffect(() => {
@@ -22,23 +22,23 @@ export default function CreateGame() {
   }, []);
 
   function handleGameCreation() {
-    const gameData = { gameName: gameName, minPlayers: minPlayers };
+    const lobbyData = { gameName: gameName, minPlayers: minPlayers };
     client.subscribe("/user/queue/lobby", (response) => {
       const gameId = response.body;
 
       client.subscribe("/topic/join-lobby/" + gameId, (response) => {
-        const game = JSON.parse(response.body);
-        setGame(game);
+        const lobby = JSON.parse(response.body);
+        setLobby(lobby);
       });
       client.subscribe("/user/queue/host", (response) => {
         setIsHost(response.body == "true");
       });
       client.publish({ destination: "/app/join-lobby/" + gameId });
-      router.push("/game/" + gameId + "/lobby");
+      router.push("/games/" + gameId + "/lobby");
     });
     client.publish({
       destination: "/app/lobby",
-      body: JSON.stringify(gameData),
+      body: JSON.stringify(lobbyData),
     });
   }
 
@@ -65,7 +65,6 @@ export default function CreateGame() {
       <button
         className={styles.button}
         onClick={() => {
-          // console.log({ gameName: gameName, minPlayers: minPlayers });
           handleGameCreation();
         }}
       >

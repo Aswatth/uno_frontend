@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { clientStore } from "../(utils)/data-stores/webSocketStore";
-import { gameListStore, gameStore } from "../(utils)/data-stores/gameStore";
+import { gameListStore, lobbyStore } from "../(utils)/data-stores/gameStore";
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
 import { playerStore } from "../(utils)/data-stores/playerStore";
@@ -10,32 +10,36 @@ import { playerStore } from "../(utils)/data-stores/playerStore";
 export default function BrowseGames() {
   const router = useRouter();
   const { setIsHost } = playerStore();
-  const { setGame } = gameStore();
+  const { setLobby } = lobbyStore();
   const { games, setGames } = gameListStore();
   const { client } = clientStore();
 
   useEffect(() => {
+    if (client == null) {
+      router.replace("/");
+      return;
+    }
+
     client.subscribe("/user/queue/browse-lobbies", (response) => {
       setGames(JSON.parse(response.body));
     });
     client.publish({ destination: "/app/browse-lobbies" });
   }, []);
 
-  function joinGame(gameToJoin) {
-    if (gameToJoin.currentPlayers.length >= gameToJoin.minPlayers) {
+  function joinGame(lobbyToJoin) {
+    if (lobbyToJoin.currentPlayers.length >= lobbyToJoin.minPlayers) {
       alert("Party is full");
       return;
     }
-    client.subscribe("/topic/join-lobby/" + gameToJoin.gameId, (response) => {
-      const game = JSON.parse(response.body);
-      console.log("GAME: " + game);
-      setGame(game);
+    client.subscribe("/topic/join-lobby/" + lobbyToJoin.gameId, (response) => {
+      const lobby = JSON.parse(response.body);
+      setLobby(lobby);
     });
     client.subscribe("/user/queue/host", (response) => {
       setIsHost(response.body == "true");
     });
-    client.publish({ destination: "/app/join-lobby/" + gameToJoin.gameId });
-    router.push("/game/" + gameToJoin.gameId + "/lobby");
+    client.publish({ destination: "/app/join-lobby/" + lobbyToJoin.gameId });
+    router.push("/games/" + lobbyToJoin.gameId + "/lobby");
   }
 
   return (
