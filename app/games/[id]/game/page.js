@@ -18,8 +18,8 @@ export default function Game() {
   const [isPickingColor, setIsPickingColor] = useState(false);
   const [selectedWildCard, setSelectedWildCard] = useState(null);
   const [didDrawACard, setDidDrawACard] = useState(false);
-  const [isGameOver, setIsGameOverStatus] = useState(false);
-  const [gameOverMessage, setGameOverMesssage] = useState("");
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [gameOverMessage, setGameOverMessage] = useState("");
   const { isHost } = playerStore();
 
   useEffect(() => {
@@ -30,13 +30,13 @@ export default function Game() {
         setGameData(content);
 
         if (content.isWinner) {
-          setIsGameOverStatus(true);
-          setGameOverMesssage("You Won");
+          setIsGameOver(true);
+          setGameOverMessage("You Won");
         } else {
           content.otherPlayersInfo.map((m) => {
             if (m.isWinner) {
-              setIsGameOverStatus(true);
-              setGameOverMesssage(m.playerName + " Won");
+              setIsGameOver(true);
+              setGameOverMessage(m.playerName + " Won");
             }
           });
         }
