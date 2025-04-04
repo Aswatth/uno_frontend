@@ -46,6 +46,7 @@ export default function Game() {
       card.cardValue == "DRAW4" ||
       gameData.topCard.cardColor == "WILD"
     ) {
+      setDidDrawACard(false);
       client.publish({
         destination: "/app/game/" + lobby.gameId + "/play",
         body: JSON.stringify(card),
@@ -60,6 +61,13 @@ export default function Game() {
       });
       setDidDrawACard(true);
     }
+  }
+
+  function endTurn() {
+    setDidDrawACard(false);
+    client.publish({
+      destination: "/app/game/" + lobby.gameId + "/endTurn",
+    });
   }
 
   function getColor(card) {
@@ -155,15 +163,27 @@ export default function Game() {
           {createCard(gameData.topCard, 0)}
         </div>
       </div>
-      <div className={styles.cards}>
-        {gameData.isMyTurn ? (
-          <h1 className={styles.turnIndicator}>Your turn</h1>
-        ) : (
-          <div></div>
-        )}
-        {gameData.cards.map((m, index) => {
-          return createCard(m, index - gameData.cards.length / 2, true);
-        })}
+      <div className={styles.playArea}>
+        <div style={{ display: "flex" }}>
+          {gameData.isMyTurn ? (
+            <h1 className={styles.turnIndicator}>YOUR TURN</h1>
+          ) : (
+            <div></div>
+          )}
+          {didDrawACard ? (
+            <button className={styles.endTurnButton} onClick={() => endTurn()}>
+              END TURN
+            </button>
+          ) : (
+            <div></div>
+          )}
+        </div>
+
+        <div className={styles.cards}>
+          {gameData.cards.map((m, index) => {
+            return createCard(m, index - gameData.cards.length / 2, true);
+          })}
+        </div>
       </div>
       <div className={styles.otherPlayersInfo}>
         {gameData.otherPlayersInfo.map((o) => {
