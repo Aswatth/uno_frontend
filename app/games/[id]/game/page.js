@@ -18,7 +18,7 @@ export default function Game() {
   const [isPickingColor, setIsPickingColor] = useState(false);
   const [selectedWildCard, setSelectedWildCard] = useState(null);
   const [didDrawACard, setDidDrawACard] = useState(false);
-  const [isGameOver, setGameOverStatus] = useState(false);
+  const [isGameOver, setIsGameOverStatus] = useState(false);
   const [gameOverMessage, setGameOverMesssage] = useState("");
   const { isHost } = playerStore();
 
@@ -30,12 +30,12 @@ export default function Game() {
         setGameData(content);
 
         if (content.isWinner) {
-          setGameOverStatus(true);
+          setIsGameOverStatus(true);
           setGameOverMesssage("You Won");
         } else {
           content.otherPlayersInfo.map((m) => {
             if (m.isWinner) {
-              setGameOverStatus(true);
+              setIsGameOverStatus(true);
               setGameOverMesssage(m.playerName + " Won");
             }
           });
