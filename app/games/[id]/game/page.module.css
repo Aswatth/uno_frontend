@@ -93,7 +93,7 @@
   position: fixed;
   display: flex;
   flex-direction: column;
-  top: 30%;
+  top: 30px;
   right: 0;
 }
 

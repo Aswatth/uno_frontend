@@ -14,6 +14,7 @@ export default function Game() {
   const { client } = clientStore();
   const [isPickingColor, setIsPickingColor] = useState(false);
   const [selectedWildCard, setSelectedWildCard] = useState(null);
+  const [didDrawACard, setDidDrawACard] = useState(false);
 
   useEffect(() => {
     const subscription = client.subscribe(
@@ -49,6 +50,15 @@ export default function Game() {
         destination: "/app/game/" + lobby.gameId + "/play",
         body: JSON.stringify(card),
       });
+    }
+  }
+
+  function draw() {
+    if (!didDrawACard && gameData.isMyTurn) {
+      client.publish({
+        destination: "/app/game/" + lobby.gameId + "/draw",
+      });
+      setDidDrawACard(true);
     }
   }
 
@@ -126,6 +136,7 @@ export default function Game() {
           style={{
             margin: "10px",
           }}
+          onClick={() => draw()}
         >
           <div className={styles.inner}>
             <span
