@@ -1,0 +1,40 @@
+.background {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: fixed;
+  min-width: 100vh;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+.popup {
+  position: fixed;
+  width: 400px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background: white;
+  border: 2px solid black;
+  border-radius: 12px;
+}
+
+.replayButton {
+  margin-left: 20px;
+  background-color: transparent;
+  border: 2px solid black;
+  padding: 20px;
+  border-radius: 12px;
+  font-weight: bold;
+}
+.replayButton:hover {
+  cursor: pointer;
+  background: #d33a30;
+  color: #ecb405;
+}

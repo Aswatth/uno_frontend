@@ -6,7 +6,10 @@ import { TbCancel, TbCardsFilled } from "react-icons/tb";
 import { MdSwapCalls } from "react-icons/md";
 import { clientStore } from "@/app/(utils)/data-stores/webSocketStore";
 import { useEffect, useState } from "react";
-import ColorPicker from "./(color-picker-popup))/page";
+import ColorPicker from "./@color-picker-popup)/page";
+import WinnerDialog from "./@winner-display/page";
+import { playerStore } from "@/app/(utils)/data-stores/playerStore";
+import { useRouter } from "next/router";
 
 export default function Game() {
   const { lobby } = lobbyStore();
@@ -15,6 +18,9 @@ export default function Game() {
   const [isPickingColor, setIsPickingColor] = useState(false);
   const [selectedWildCard, setSelectedWildCard] = useState(null);
   const [didDrawACard, setDidDrawACard] = useState(false);
+  const [isGameOver, setGameOverStatus] = useState(false);
+  const [gameOverMessage, setGameOverMesssage] = useState("");
+  const { isHost } = playerStore();
 
   useEffect(() => {
     const subscription = client.subscribe(
@@ -22,6 +28,18 @@ export default function Game() {
       (resposne) => {
         const content = JSON.parse(resposne.body);
         setGameData(content);
+
+        if (content.isWinner) {
+          setGameOverStatus(true);
+          setGameOverMesssage("You Won");
+        } else {
+          content.otherPlayersInfo.map((m) => {
+            if (m.isWinner) {
+              setGameOverStatus(true);
+              setGameOverMesssage(m.playerName + " Won");
+            }
+          });
+        }
       }
     );
 
@@ -215,6 +233,14 @@ export default function Game() {
             setIsPickingColor(false);
           }}
         ></ColorPicker>
+      ) : (
+        <div></div>
+      )}
+      {isGameOver ? (
+        <WinnerDialog
+          message={gameOverMessage}
+          showReplayButton={isHost}
+        ></WinnerDialog>
       ) : (
         <div></div>
       )}
