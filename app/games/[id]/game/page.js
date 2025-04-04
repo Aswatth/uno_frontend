@@ -180,6 +180,9 @@ export default function Game() {
             };
             play(card);
           }}
+          onClose={() => {
+            setIsPickingColor(false);
+          }}
         ></ColorPicker>
       ) : (
         <div></div>
