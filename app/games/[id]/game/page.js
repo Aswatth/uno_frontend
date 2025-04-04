@@ -1,12 +1,56 @@
 "use client";
-import { gameStore } from "@/app/(utils)/data-stores/gameStore";
+import { gameStore, lobbyStore } from "@/app/(utils)/data-stores/gameStore";
 
 import styles from "./page.module.css";
-import { TbCancel,TbCardsFilled } from "react-icons/tb";
+import { TbCancel, TbCardsFilled } from "react-icons/tb";
 import { MdSwapCalls } from "react-icons/md";
+import { clientStore } from "@/app/(utils)/data-stores/webSocketStore";
+import { useEffect, useState } from "react";
+import ColorPicker from "./(color-picker-popup))/page";
 
 export default function Game() {
-  const { gameData } = gameStore();
+  const { lobby } = lobbyStore();
+  const { gameData, setGameData } = gameStore();
+  const { client } = clientStore();
+  const [isPickingColor, setIsPickingColor] = useState(false);
+  const [selectedWildCard, setSelectedWildCard] = useState(null);
+
+  useEffect(() => {
+    const subscription = client.subscribe(
+      "/user/queue/game/" + lobby.gameId,
+      (resposne) => {
+        const content = JSON.parse(resposne.body);
+        setGameData(content);
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  function play(card) {
+    if (!gameData.isMyTurn) return;
+
+    if (card.cardColor == "WILD") {
+      setIsPickingColor(true);
+      setSelectedWildCard(card);
+      return;
+    }
+
+    if (
+      card.cardColor == gameData.topCard.cardColor ||
+      card.cardValue == gameData.topCard.cardValue ||
+      card.cardValue == "WILD" ||
+      card.cardValue == "DRAW4" ||
+      gameData.topCard.cardColor == "WILD"
+    ) {
+      client.publish({
+        destination: "/app/game/" + lobby.gameId + "/play",
+        body: JSON.stringify(card),
+      });
+    }
+  }
 
   function getColor(card) {
     if (card.cardColor == "WILD") return "black";
@@ -36,63 +80,38 @@ export default function Game() {
       case "NINE":
         return "9";
       case "REVERSE":
-        return isValue ? (
-          <MdSwapCalls style={{ fontSize: "0.5em", rotate: "30deg" }} />
-        ) : (
-          <MdSwapCalls style={{ marginTop: "5px" }} />
-        );
+        return <MdSwapCalls style={{ rotate: "30deg" }} />;
       case "SKIP":
-        return isValue ? (
-          <TbCancel style={{ fontSize: "0.5em" }} />
-        ) : (
-          <TbCancel style={{ marginTop: "5px" }} />
-        );
+        return <TbCancel />;
       case "DRAW4":
-        return isValue ? (
-          <TbCardsFilled
-            style={{
-              fontSize: "0.5em",
-            }}
-          />
-        ) : (
-          "+4"
-        );
+        return isValue ? <TbCardsFilled /> : "+4";
       case "DRAW2":
-        return isValue ? (
-          <TbCardsFilled
-            style={{
-              fontSize: "0.5em",
-            }}
-          />
-        ) : (
-          "+2"
-        );
+        return isValue ? <TbCardsFilled /> : "+2";
       case "WILD":
-        return isValue ? (
-          <TbCardsFilled
-            style={{
-              fontSize: "0.5em",
-            }}
-          />
-        ) : (
-          "W"
-        );
+        return isValue ? <TbCardsFilled /> : "W";
     }
   }
 
-  function createCard(card, position) {
+  function createCard(card, position, canInteract = false) {
     return (
       <div
-        className={`${styles[getColor(card)]} ${styles.card}`}
+        className={`${styles[getColor(card)]} ${styles.card} ${
+          canInteract ? `${styles.interact}` : ``
+        }
+        `}
         style={{ "--i": position }}
         onClick={() => {
-          console.log(card);
+          play(card);
         }}
       >
         <div className={styles.inner}>
-          <span className={`${styles["top-left"]}`}>{getValue(card)}</span>
+          <span className={`${styles.corner} ${styles["top-left"]}`}>
+            {getValue(card)}
+          </span>
           <span className={styles.value}>{getValue(card, true)}</span>
-          <span className={`${styles["bottom-right"]}`}>{getValue(card)}</span>
+          <span className={`${styles.corner} ${styles["bottom-right"]}`}>
+            {getValue(card)}
+          </span>
         </div>
       </div>
     );
@@ -100,18 +119,40 @@ export default function Game() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.cards}>
-        {gameData.cards.map((m, index) => {
-          return createCard(m, index - gameData.cards.length / 2);
-        })}
+      <div className={styles.deck}>
+        <div
+          className={`${styles.black} ${styles.card}
+        `}
+          style={{
+            margin: "10px",
+          }}
+        >
+          <div className={styles.inner}>
+            <span
+              className={styles.value}
+              style={{
+                fontSize: "40px",
+                color: "#ecb405",
+                background: "#d33a30",
+              }}
+            >
+              UNO
+            </span>
+          </div>
+        </div>
+        <div className={styles.topCard} style={{ margin: "10px" }}>
+          {createCard(gameData.topCard, 0)}
+        </div>
       </div>
-      <div className={`${styles.topCard}`}>
+      <div className={styles.cards}>
         {gameData.isMyTurn ? (
           <h1 className={styles.turnIndicator}>Your turn</h1>
         ) : (
           <div></div>
         )}
-        {createCard(gameData.topCard, 0)}
+        {gameData.cards.map((m, index) => {
+          return createCard(m, index - gameData.cards.length / 2, true);
+        })}
       </div>
       <div className={styles.otherPlayersInfo}>
         {gameData.otherPlayersInfo.map((o) => {
@@ -129,6 +170,20 @@ export default function Game() {
           );
         })}
       </div>
+      {isPickingColor ? (
+        <ColorPicker
+          onColorPick={(pickedColor) => {
+            setIsPickingColor(false);
+            const card = {
+              cardColor: pickedColor,
+              cardValue: selectedWildCard.cardValue,
+            };
+            play(card);
+          }}
+        ></ColorPicker>
+      ) : (
+        <div></div>
+      )}
     </div>
   );
 }
