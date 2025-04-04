@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import ColorPicker from "./@color-picker-popup)/page";
 import WinnerDialog from "./@winner-display/page";
 import { playerStore } from "@/app/(utils)/data-stores/playerStore";
-import { useRouter } from "next/router";
 
 export default function Game() {
   const { lobby } = lobbyStore();
@@ -31,12 +30,12 @@ export default function Game() {
 
         if (content.isWinner) {
           setIsGameOver(true);
-          setGameOverMessage("You Won");
+          setGameOverMessage("You won!!!");
         } else {
           content.otherPlayersInfo.map((m) => {
             if (m.isWinner) {
               setIsGameOver(true);
-              setGameOverMessage(m.playerName + " Won");
+              setGameOverMessage(m.playerName + " won!!!");
             }
           });
         }
