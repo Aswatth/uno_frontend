@@ -6,6 +6,7 @@ import { playerStore } from "@/app/(utils)/data-stores/playerStore";
 import styles from "./page.module.css";
 import { clientStore } from "@/app/(utils)/data-stores/webSocketStore";
 import { useRouter } from "next/navigation";
+import GameChat from "../game/@chat/page";
 
 export default function Lobby() {
   const { lobby, setLobby, isAllReady } = lobbyStore();
@@ -32,7 +33,6 @@ export default function Lobby() {
       (result) => {
         const content = JSON.parse(result.body);
         setGameData(content);
-        console.log("GOING TO GAME");
         router.push("/games/" + lobby.gameId + "/game");
       }
     );
@@ -91,10 +91,9 @@ export default function Lobby() {
       <button
         className={styles.button}
         disabled={
-          !isAllReady && lobby.currentPlayers.length == lobby.minPlayers
+          !(isAllReady && lobby.currentPlayers.length == lobby.minPlayers)
         }
         onClick={() => {
-          console.log("STARTING");
           client.publish({
             destination: `/app/lobby/${lobby.gameId}/start`,
           });
@@ -151,6 +150,7 @@ export default function Lobby() {
         )}
         {displayPlayers()}
       </div>
+      <GameChat></GameChat>
     </div>
   );
 }

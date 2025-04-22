@@ -12,6 +12,15 @@ export const lobbyStore = create((set) => ({
   },
 }));
 
+export const chatStore = create((set) => ({
+  messageList: [],
+  setMessageList: (messageList) => {
+    set(() => ({
+      messageList,
+    }));
+  },
+}));
+
 export const gameStore = create((set) => ({
   gameData: {},
   setGameData: (gameData) => {

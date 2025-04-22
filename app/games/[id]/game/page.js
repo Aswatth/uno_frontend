@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import ColorPicker from "./@color-picker-popup)/page";
 import WinnerDialog from "./@winner-display/page";
 import { playerStore } from "@/app/(utils)/data-stores/playerStore";
+import GameChat from "./@chat/page";
 
 export default function Game() {
   const { lobby } = lobbyStore();
@@ -243,6 +244,7 @@ export default function Game() {
       ) : (
         <div></div>
       )}
+      <GameChat></GameChat>
     </div>
   );
 }
