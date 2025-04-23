@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 import { GrSend } from "react-icons/gr";
 import { IoChatbubbles, IoClose } from "react-icons/io5";
@@ -24,6 +24,47 @@ export default function GameChat() {
     });
   }, []);
 
+  const messageRef = useRef(message);
+  const isChatOpenRef = useRef(isChatOpen);
+
+  useEffect(() => {
+    messageRef.current = message;
+    isChatOpenRef.current = isChatOpen;
+  }, [message, isChatOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key == " ") {
+        setIsChatOpen(true);
+      }
+      if (e.key == "Escape") {
+        setIsChatOpen(false);
+      }
+      if (e.key == "Enter" && isChatOpenRef.current) {
+        handleMessageSend();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown, true);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  const handleMessageSend = () => {
+    if (messageRef.current.trim() != "") {
+      client.publish({
+        destination: `/app/game/${lobby.gameId}/chat`,
+        body: JSON.stringify({
+          sender: playerName,
+          message: messageRef.current,
+        }),
+      });
+      setMessage("");
+    }
+  };
+
   return (
     <div>
       {isChatOpen ? (
@@ -36,7 +77,6 @@ export default function GameChat() {
           </div>
           <div className={styles.chatMessages}>
             {messageList.map((m) => {
-              console.log(m.sender);
               return (
                 <div className={styles.message}>
                   <span>
@@ -48,18 +88,14 @@ export default function GameChat() {
             })}
           </div>
           <div className={styles.chatInput}>
-            <input onChange={(e) => setMessage(e.target.value)} />
-            <button
-              onClick={() => {
-                client.publish({
-                  destination: `/app/game/${lobby.gameId}/chat`,
-                  body: JSON.stringify({
-                    sender: playerName,
-                    message: message,
-                  }),
-                });
+            <input
+              value={message}
+              autoFocus={true}
+              onChange={(e) => {
+                setMessage(e.target.value);
               }}
-            >
+            />
+            <button onClick={handleMessageSend}>
               <GrSend />
             </button>
           </div>

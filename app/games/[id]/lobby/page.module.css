@@ -3,8 +3,6 @@
   min-width: 100vw;
   display: flex;
   flex-direction: column;
-  align-items: start;
-  justify-content: start;
 }
 
 .menuBar {
@@ -24,17 +22,30 @@
 
 .title {
   color: #f9db28;
-  text-shadow: -5px 2px black;
+  text-shadow: 3px 3px black;
   font-size: 2.5em;
   font-weight: bold;
   text-transform: uppercase;
   flex: 1;
 }
+
+.copyButton {
+  background: transparent;
+  color: #f9db28;
+  box-shadow: none;
+  border: transparent;
+  margin-left: 10px;
+  font-size: 0.5em;
+}
+.copyButton:hover {
+  cursor: pointer;
+}
+
 .page ul {
-  width: 100%;
+  padding-inline: 20%;
 }
 .page ul li {
-  margin: 20px;
+  margin: 10px;
   list-style: none;
 }
 
@@ -48,14 +59,15 @@
   align-items: center;
 }
 
-.lt-title {
+.list-tile .lt-title {
   flex: 4;
   font-size: 1.5em;
   text-transform: uppercase;
 }
 
-.lt-title span {
-  font-weight: lighter;
+.list-tile .lt-trailing {
+  text-transform: uppercase;
+  font-weight: bold;
   font-size: 0.8em;
 }
 

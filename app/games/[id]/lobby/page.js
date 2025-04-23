@@ -7,6 +7,7 @@ import styles from "./page.module.css";
 import { clientStore } from "@/app/(utils)/data-stores/webSocketStore";
 import { useRouter } from "next/navigation";
 import GameChat from "../game/@chat/page";
+import { AiFillCopy } from "react-icons/ai";
 
 export default function Lobby() {
   const { lobby, setLobby, isAllReady } = lobbyStore();
@@ -72,6 +73,8 @@ export default function Lobby() {
               <div className={styles[`list-tile`]}>
                 <div className={styles[`lt-title`]}>
                   <h3>{m.playerName}</h3>
+                </div>
+                <div className={styles[`lt-trailing`]}>
                   {m.status ? (
                     <span style={{ color: "green" }}>Ready</span>
                   ) : (
@@ -88,19 +91,35 @@ export default function Lobby() {
 
   function startGameButton() {
     return (
-      <button
-        className={styles.button}
-        disabled={
-          !(isAllReady && lobby.currentPlayers.length == lobby.minPlayers)
-        }
-        onClick={() => {
-          client.publish({
-            destination: `/app/lobby/${lobby.gameId}/start`,
-          });
-        }}
-      >
-        Start game
-      </button>
+      <div>
+        <button
+          className={styles.button}
+          disabled={
+            !(isAllReady && lobby.currentPlayers.length == lobby.minPlayers)
+          }
+          onClick={() => {
+            client.publish({
+              destination: `/app/lobby/${lobby.gameId}/start`,
+            });
+          }}
+        >
+          Start game
+        </button>
+        {!(isAllReady && lobby.currentPlayers.length == lobby.minPlayers) ? (
+          <span
+            style={{
+              fontStyle: "italic",
+              fontWeight: "lighter",
+              marginLeft: "10px",
+              letterSpacing: "2px",
+            }}
+          >
+            Waiting for all players to be ready.
+          </span>
+        ) : (
+          <div></div>
+        )}
+      </div>
     );
   }
 
@@ -134,6 +153,15 @@ export default function Lobby() {
     }
   }
 
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(lobby.gameId);
+    } catch (err) {
+      //Do nothing. Copy failed
+      console.log("COPY FAILED" + err);
+    }
+  };
+
   function leaveGame() {
     client.publish({
       destination: "/app/leave-lobby/" + lobby.gameId,
@@ -146,6 +174,9 @@ export default function Lobby() {
       <div className={styles.menuBar}>
         <h1 className={styles.title}>
           Game: <i>{lobby.gameName}</i>
+          <button className={styles.copyButton} onClick={handleCopy}>
+            <AiFillCopy />
+          </button>
         </h1>
         <button className={styles.button} onClick={() => leaveGame()}>
           Leave game

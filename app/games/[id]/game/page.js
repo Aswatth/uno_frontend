@@ -188,13 +188,6 @@ export default function Game() {
           ) : (
             <div></div>
           )}
-          {didDrawACard ? (
-            <button className={styles.endTurnButton} onClick={() => endTurn()}>
-              END TURN
-            </button>
-          ) : (
-            <div></div>
-          )}
         </div>
 
         <div className={styles.cards}>
@@ -202,6 +195,13 @@ export default function Game() {
             return createCard(m, index - gameData.cards.length / 2, true);
           })}
         </div>
+        {didDrawACard ? (
+          <button className={styles.endTurnButton} onClick={() => endTurn()}>
+            END TURN
+          </button>
+        ) : (
+          <div></div>
+        )}
       </div>
       <div className={styles.otherPlayersInfo}>
         {gameData.otherPlayersInfo.map((o) => {
@@ -211,10 +211,12 @@ export default function Game() {
                 o.isMyTurn ? styles.opponentTurnIndicator : styles["info-tile"]
               }
             >
-              <h3>
-                {o.playerName} {o.isMyTurn ? "'s turn" : ""}
-              </h3>
-              <p>Cards left: {o.cardCount}</p>
+              <h3>{o.playerName}</h3>
+
+              <span>
+                <TbCardsFilled fontSize="1em"></TbCardsFilled>
+                <b>{"\t" + o.cardCount}</b>
+              </span>
             </div>
           );
         })}

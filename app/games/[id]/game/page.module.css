@@ -23,8 +23,9 @@
 }
 
 .endTurnButton {
-  margin-left: 20px;
-  background-color: transparent;
+  margin-bottom: 20px;
+  background-color: #d33a30;
+  color: white;
   border: 2px solid black;
   padding: 20px;
   border-radius: 12px;
@@ -116,18 +117,32 @@
   left: 0;
 }
 
-.otherPlayersInfo .info-tile {
+.otherPlayersInfo .info-tile,
+.otherPlayersInfo .opponentTurnIndicator {
+  display: flex;
   padding: 20px;
   border-radius: 12px;
   margin: 20px;
+  width: 300px;
+}
+
+.info-tile {
   border: 2px solid black;
 }
 
 .otherPlayersInfo .opponentTurnIndicator {
-  padding: 20px;
-  border-radius: 12px;
-  margin: 20px;
-  border: 2px solid red;
+  background-color: #d33a30;
+  color: #ecb405;
+}
+
+.info-tile h3,
+.opponentTurnIndicator h3 {
+  flex: 1;
+}
+
+.turnIndicator {
+  color: white;
+  text-shadow: 3px 3px black;
 }
 
 .red .inner {
