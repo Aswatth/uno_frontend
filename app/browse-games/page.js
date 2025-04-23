@@ -31,7 +31,7 @@ export default function BrowseGames() {
       alert("Party is full");
       return;
     }
-    client.subscribe("/topic/join-lobby/" + lobbyToJoin.gameId, (response) => {
+    client.subscribe("/topic/lobby/" + lobbyToJoin.gameId, (response) => {
       const lobby = JSON.parse(response.body);
       setLobby(lobby);
     });

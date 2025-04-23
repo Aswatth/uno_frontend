@@ -28,6 +28,7 @@
   font-size: 2.5em;
   font-weight: bold;
   text-transform: uppercase;
+  flex: 1;
 }
 .page ul {
   width: 100%;

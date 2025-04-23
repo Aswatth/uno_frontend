@@ -134,12 +134,22 @@ export default function Lobby() {
     }
   }
 
+  function leaveGame() {
+    client.publish({
+      destination: "/app/leave-lobby/" + lobby.gameId,
+    });
+    router.replace("/home");
+  }
+
   return (
     <div className={styles.page}>
       <div className={styles.menuBar}>
         <h1 className={styles.title}>
           Game: <i>{lobby.gameName}</i>
         </h1>
+        <button className={styles.button} onClick={() => leaveGame()}>
+          Leave game
+        </button>
       </div>
       <div className={styles.content}>
         {isHost ? startGameButton() : <div></div>}
