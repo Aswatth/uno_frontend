@@ -4,6 +4,7 @@ import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
 import { clientStore } from "./(utils)/data-stores/webSocketStore";
 import { Client } from "@stomp/stompjs";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function App() {
   const router = useRouter();
@@ -11,6 +12,10 @@ export default function App() {
   const { setClient } = clientStore();
 
   function handleLogin() {
+    if (playerName.trim() == "") {
+      toast.error("Player name cannot be empty.");
+      return;
+    }
     const newClient = new Client({
       brokerURL: process.env.NEXT_PUBLIC_WEBSOCKET_URL,
       connectHeaders: {
@@ -20,7 +25,7 @@ export default function App() {
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
       onConnect: (frame) => {
-        router.push("/home");
+        router.replace("/home");
       },
       onStompError: (frame) => {
         console.log("Broker reported error: " + frame.headers["message"]);
@@ -33,6 +38,9 @@ export default function App() {
 
   return (
     <div className={styles.page}>
+      <div>
+        <Toaster position="bottom-center" />
+      </div>
       <div className={styles.title}>
         <h1>UNO</h1>
       </div>

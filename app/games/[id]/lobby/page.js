@@ -8,6 +8,7 @@ import { clientStore } from "@/app/(utils)/data-stores/webSocketStore";
 import { useRouter } from "next/navigation";
 import GameChat from "../game/@chat/page";
 import { AiFillCopy } from "react-icons/ai";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Lobby() {
   const { lobby, setLobby, isAllReady } = lobbyStore();
@@ -91,35 +92,19 @@ export default function Lobby() {
 
   function startGameButton() {
     return (
-      <div>
-        <button
-          className={styles.button}
-          disabled={
-            !(isAllReady && lobby.currentPlayers.length == lobby.minPlayers)
-          }
-          onClick={() => {
-            client.publish({
-              destination: `/app/lobby/${lobby.gameId}/start`,
-            });
-          }}
-        >
-          Start game
-        </button>
-        {!(isAllReady && lobby.currentPlayers.length == lobby.minPlayers) ? (
-          <span
-            style={{
-              fontStyle: "italic",
-              fontWeight: "lighter",
-              marginLeft: "10px",
-              letterSpacing: "2px",
-            }}
-          >
-            Waiting for all players to be ready.
-          </span>
-        ) : (
-          <div></div>
-        )}
-      </div>
+      <button
+        className={styles.button}
+        disabled={
+          !(isAllReady && lobby.currentPlayers.length == lobby.minPlayers)
+        }
+        onClick={() => {
+          client.publish({
+            destination: `/app/lobby/${lobby.gameId}/start`,
+          });
+        }}
+      >
+        Start game
+      </button>
     );
   }
 
@@ -156,6 +141,7 @@ export default function Lobby() {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(lobby.gameId);
+      toast.success("Game ID copied to clipboard.");
     } catch (err) {
       //Do nothing. Copy failed
       console.log("COPY FAILED" + err);
@@ -169,8 +155,21 @@ export default function Lobby() {
     router.replace("/home");
   }
 
+  function displayReadyInfo() {
+    let count = 0;
+
+    lobby.currentPlayers.map((m) => {
+      if (m.status) {
+        count += 1;
+      }
+    });
+
+    return `${count} / ${lobby.currentPlayers.length} ready`;
+  }
+
   return (
     <div className={styles.page}>
+      <Toaster />
       <div className={styles.menuBar}>
         <h1 className={styles.title}>
           Game: <i>{lobby.gameName}</i>
@@ -183,12 +182,18 @@ export default function Lobby() {
         </button>
       </div>
       <div className={styles.content}>
-        {isHost ? startGameButton() : <div></div>}
-        {!isReady && !isHost ? (
-          <span>{readyButton()}</span>
-        ) : (
-          <span>{notReadyButton()}</span>
-        )}
+        <div className={styles.info}>
+          <h4>
+            {lobby.currentPlayers.length} of {lobby.minPlayers} joined
+          </h4>
+          <h4>{displayReadyInfo()}</h4>
+          {isHost ? startGameButton() : <div></div>}
+          {!isReady ? (
+            <span>{readyButton()}</span>
+          ) : (
+            <span>{notReadyButton()}</span>
+          )}
+        </div>
         {displayPlayers()}
       </div>
       <GameChat></GameChat>

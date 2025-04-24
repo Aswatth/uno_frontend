@@ -15,6 +15,20 @@
   align-items: center;
   background-color: #ed1d26;
 }
+
+.backButton {
+  background: transparent;
+  border: transparent;
+  box-shadow: none;
+  color: #f9db28;
+  font-size: 2em;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+.backButton:hover {
+  cursor: pointer;
+}
+
 .title {
   color: #f9db28;
   text-shadow: -5px 2px black;

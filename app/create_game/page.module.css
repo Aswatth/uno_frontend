@@ -16,6 +16,24 @@
   margin-bottom: 30px;
 }
 
+.backButton {
+  position: fixed;
+  background: transparent;
+  border: transparent;
+  box-shadow: none;
+  color: #f9db28;
+  font-size: 2em;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  text-shadow: 2px 2px black;
+  font-weight: bold;
+}
+.backButton:hover {
+  cursor: pointer;
+}
+
 .inputs {
   display: flex;
   flex-direction: column;

@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { lobbyStore } from "../(utils)/data-stores/gameStore";
 import { playerStore } from "../(utils)/data-stores/playerStore";
+import toast, { Toaster } from "react-hot-toast";
+import { IoIosArrowBack } from "react-icons/io";
 
 export default function CreateGame() {
   const router = useRouter();
@@ -22,6 +24,15 @@ export default function CreateGame() {
   }, []);
 
   function handleGameCreation() {
+    if (gameName.trim() == "") {
+      toast.error("Game name cannot be empty.");
+      return;
+    }
+    if (minPlayers < 2 || minPlayers > 7) {
+      toast.error("Player count should be between 2-7");
+      return;
+    }
+
     const lobbyData = { gameName: gameName, minPlayers: minPlayers };
     client.subscribe("/user/queue/lobby", (response) => {
       const gameId = response.body;
@@ -44,6 +55,15 @@ export default function CreateGame() {
 
   return (
     <div className={styles.page}>
+      <Toaster position="bottom-center" />
+      <button
+        className={styles.backButton}
+        onClick={() => {
+          router.back();
+        }}
+      >
+        <IoIosArrowBack></IoIosArrowBack> Back
+      </button>
       <h1 className={styles.title}>Create a game</h1>
       <div className={styles.inputs}>
         <input

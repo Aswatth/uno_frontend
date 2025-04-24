@@ -6,6 +6,8 @@ import { gameListStore, lobbyStore } from "../(utils)/data-stores/gameStore";
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
 import { playerStore } from "../(utils)/data-stores/playerStore";
+import toast, { Toaster } from "react-hot-toast";
+import { IoIosArrowBack } from "react-icons/io";
 
 export default function BrowseGames() {
   const router = useRouter();
@@ -28,7 +30,7 @@ export default function BrowseGames() {
 
   function joinGame(lobbyToJoin) {
     if (lobbyToJoin.currentPlayers.length >= lobbyToJoin.minPlayers) {
-      alert("Party is full");
+      toast.error("Cannot join. Party is full!");
       return;
     }
     client.subscribe("/topic/lobby/" + lobbyToJoin.gameId, (response) => {
@@ -44,7 +46,18 @@ export default function BrowseGames() {
 
   return (
     <div className={styles.page}>
+      <div>
+        <Toaster></Toaster>
+      </div>
       <div className={styles.menuBar}>
+        <button
+          className={styles.backButton}
+          onClick={() => {
+            router.back();
+          }}
+        >
+          <IoIosArrowBack></IoIosArrowBack>
+        </button>
         <h1 className={styles.title}>Browse games</h1>
       </div>
 
