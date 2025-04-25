@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { clientStore } from "../(utils)/data-stores/webSocketStore";
 import { gameListStore, lobbyStore } from "../(utils)/data-stores/gameStore";
 import styles from "./page.module.css";
@@ -14,6 +14,8 @@ export default function BrowseGames() {
   const { setIsHost } = playerStore();
   const { setLobby } = lobbyStore();
   const { games, setGames } = gameListStore();
+
+  const [filteredGames, setFilteredGames] = useState(games);
   const { client } = clientStore();
 
   useEffect(() => {
@@ -23,7 +25,9 @@ export default function BrowseGames() {
     }
 
     client.subscribe("/user/queue/browse-lobbies", (response) => {
-      setGames(JSON.parse(response.body));
+      const availableGames = JSON.parse(response.body);
+      setGames(availableGames);
+      setFilteredGames(availableGames);
     });
     client.publish({ destination: "/app/browse-lobbies" });
   }, []);
@@ -60,9 +64,23 @@ export default function BrowseGames() {
         </button>
         <h1 className={styles.title}>Browse games</h1>
       </div>
+      <div className={styles.searchField}>
+        <input
+          placeholder="Search for games using game ID"
+          onChange={(e) => {
+            if (e.target.value.trim() != "") {
+              setFilteredGames(
+                games.filter((f) => f.gameId.startsWith(e.target.value))
+              );
+            } else {
+              setFilteredGames(games);
+            }
+          }}
+        ></input>
+      </div>
 
       <ul>
-        {games.map((m) => {
+        {filteredGames.map((m) => {
           return (
             <li key={m.gameId}>
               <div className={styles[`list-tile`]}>
