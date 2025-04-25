@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import GameChat from "../game/@chat/page";
 import { AiFillCopy } from "react-icons/ai";
 import toast, { Toaster } from "react-hot-toast";
-import EditMinPlayers from "./@edit-min-players/page";
+import EditMinPlayers from "./@edit_min_players/page";
 
 export default function Lobby() {
   const { lobby, setLobby, isAllReady } = lobbyStore();

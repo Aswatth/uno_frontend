@@ -6,8 +6,8 @@ import { TbCancel, TbCardsFilled } from "react-icons/tb";
 import { MdSwapCalls } from "react-icons/md";
 import { clientStore } from "@/app/(utils)/data-stores/webSocketStore";
 import { useEffect, useState } from "react";
-import ColorPicker from "./@color-picker-popup)/page";
-import WinnerDialog from "./@winner-display/page";
+import ColorPicker from "./@color_picker_popup/page";
+import WinnerDialog from "./@winner_display/page";
 import { playerStore } from "@/app/(utils)/data-stores/playerStore";
 import GameChat from "./@chat/page";
 
