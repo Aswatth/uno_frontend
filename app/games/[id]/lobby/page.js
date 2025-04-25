@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { gameStore, lobbyStore } from "../../../(utils)/data-stores/gameStore";
 import { playerStore } from "@/app/(utils)/data-stores/playerStore";
 import styles from "./page.module.css";
@@ -9,12 +9,14 @@ import { useRouter } from "next/navigation";
 import GameChat from "../game/@chat/page";
 import { AiFillCopy } from "react-icons/ai";
 import toast, { Toaster } from "react-hot-toast";
+import EditMinPlayers from "./@edit-min-players/page";
 
 export default function Lobby() {
   const { lobby, setLobby, isAllReady } = lobbyStore();
   const { isHost, isReady, setReadyStatus } = playerStore();
   const { client } = clientStore();
   const { setGameData } = gameStore();
+  const [showEditPopUp, setShowEditPopUp] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -108,6 +110,20 @@ export default function Lobby() {
     );
   }
 
+  function editMinPlayersButton() {
+    return (
+      <button
+        className={styles.button}
+        onClick={() => {
+          setShowEditPopUp(true);
+        }}
+        style={{ marginLeft: "10px" }}
+      >
+        Edit minimum players
+      </button>
+    );
+  }
+
   function readyButton() {
     if (!isHost) {
       return (
@@ -188,6 +204,12 @@ export default function Lobby() {
           </h4>
           <h4>{displayReadyInfo()}</h4>
           {isHost ? startGameButton() : <div></div>}
+          {isHost ? editMinPlayersButton() : <div></div>}
+          {showEditPopUp ? (
+            <EditMinPlayers onClose={() => setShowEditPopUp(false)} />
+          ) : (
+            <div></div>
+          )}
           {!isReady ? (
             <span>{readyButton()}</span>
           ) : (

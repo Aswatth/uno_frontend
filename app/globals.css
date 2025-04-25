@@ -44,6 +44,9 @@ input {
 button {
   box-shadow: 2px 2px black;
 }
+button:hover {
+  cursor: pointer;
+}
 
 @media (prefers-color-scheme: dark) {
   html {
