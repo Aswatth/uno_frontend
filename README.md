@@ -39,7 +39,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 Deployed on Netlify <a href="https://uno-multiplayer-game.netlify.app/">link.</a>
 
-The backend is deployed on Render under free-tier, so it might take a while for it to be up and running.
+The <a href="https://github.com/Aswatth/uno_backend">backend</a> is deployed on Render under free-tier, so it might take a while for it to be up and running.
 
 ![image](https://github.com/user-attachments/assets/667d4aac-70b2-4cd7-bf3e-af34e7377616)
 
