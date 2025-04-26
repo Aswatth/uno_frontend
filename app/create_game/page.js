@@ -66,13 +66,16 @@ export default function CreateGame() {
       </button>
       <h1 className={styles.title}>Create a game</h1>
       <div className={styles.inputs}>
+        <label htmlFor="gameName" className={styles.label}>Game name</label>
         <input
+          id="gameName"
           className={styles.gameName}
           value={gameName}
           maxLength={15}
           placeholder="Lets give a name for your game..."
           onChange={(e) => setGameName(e.target.value)}
         ></input>
+        <label htmlFor="gameName" className={styles.label}>Minimum players</label>
         <input
           className={styles.minPlayers}
           type="number"

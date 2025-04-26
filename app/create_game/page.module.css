@@ -30,8 +30,11 @@
   text-shadow: 2px 2px black;
   font-weight: bold;
 }
-.backButton:hover {
-  cursor: pointer;
+
+.label {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1em;
 }
 
 .inputs {
